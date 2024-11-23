@@ -16,17 +16,7 @@ cur.execute("""
             password TEXT
 );
 """)
-cur.execute("""CREATE TABLE IF NOT EXISTS users(
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER,
-            amount REAL,
-            category TEXT,
-            description TEXT,
-            date TEXT,
-            FOREIGN KEY(user_id) REFERENCES users(rowid)
-            
-)
-""")
+
 conn.commit()
 print("Database initialized successfully.")
 
@@ -94,72 +84,7 @@ def login_user():
         else:
             print("Incorrect password! Please try again.")
 
-def add_expense(user_id):
-    conn = sqlite3.cursor()
-    cur = conn.cursor()
-
-    while True:
-        try:
-            amount = float(input("Enter amount: "))
-            category = input("Enter the category (e.g food,shopping)")
-            description = input("Enter a description: ")
-            date = input(f"Enter the date (default is{datetime.now().strftime('%Y-%m-%d')})")
-
-            if not date:
-                date = datetime.now().strftime('%Y-%m-%d')
-
-            cur.execute(
-                "INSERT INTO expenses WHERE (user_id, amount, category, description, date) VALUES (?,?,?, ?)" ,
-                        (user_id, amount, category, description, date))  
-
-            conn.commit()
-            print("Expense added successfully!") 
-            break
-        except ValueError:
-            print("Please enter a valid amount.")
-
-
-
-
-def view_expenses(user_id):
-
-    cur.execute('SELECT * FROM expenses WHERE user_id=?', (user_id,))
-    expenses = cur.fetchall()
-
-
-    for expense in expenses:
-        print(f"ID: {expense[0]},Amount:{expense[2]}, Category:{expense[4]}, Description:{expense[4]}, Date{expense[5]}")
-    else:
-         print ('No expenses found')
-
-
-def total_expenses(user_id):
-    cur.execute("SELECT SUM (amount) FROM expenses WHERE user_id = ?", (user_id,))
-    result =cur.fetchone()
-    total = result[0] if result[0] is not None else 0.0
-    print(f"Total expenses: {total}")
-
-def expense_tracker(user_id):
-    while True:
-        print("\nExpense Tracker Menu:")
-        print("1. Add Expense")
-        print("2. View Expenses")
-        print("3. Total Expenses")
-        print("4. Exit")
-
-        option = input("Choose an option: ").strip()
-
-        if option == "1":
-            add_expense(user_id)
-        elif option == "2":
-            view_expenses(user_id)
-        elif option == "3":
-            total_expenses(user_id)
-        elif option == "4":
-            print("Exiting Expense Tracker.")
-            break
-        else:
-            print("Invalid option, please try again")          
+  
 
 
 
